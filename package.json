@@ -4,10 +4,13 @@
   "private": true,
   "scripts": {
     "android": "react-native run-android",
+    "android:clean": "cd android && ./gradlew clean && cd ..",
     "ios": "react-native run-ios",
     "lint": "eslint .",
     "start": "react-native start",
-    "test": "jest"
+    "test": "jest",
+    "e2e:build-android-debug": "yarn android:clean && detox build -c android.emu.debug",
+    "e2e:test-android-debug": "detox test -c android.emu.debug"
   },
   "dependencies": {
     "@react-native-community/masked-view": "^0.1.11",
@@ -37,6 +40,7 @@
     "@types/react": "^18.2.6",
     "@types/react-test-renderer": "^18.0.0",
     "babel-jest": "^29.6.3",
+    "detox": "^20.20.2",
     "eslint": "^8.19.0",
     "jest": "^29.6.3",
     "prettier": "2.8.8",
