@@ -1,8 +1,10 @@
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
+import {
+  StackNavigationProp,
+  // createStackNavigator,
+} from '@react-navigation/stack';
 import HomeScreen from '../screens/HomeScreen';
-import ProfileScreen from '../screens/ProfileScreen';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import NewTransferScreen from '../screens/NewTransferScreen';
 import TransactionHistoryScreen from '../screens/TransactionHistoryScreen';
@@ -13,10 +15,35 @@ import {LaunchArguments} from 'react-native-launch-arguments';
 import {useAppSelector} from '../store/hooks';
 import authHeader from '../api/authHeader';
 import LogoutScreen from '../screens/LogoutScreen';
+import { Text } from 'react-native-paper';
 
-const Drawer = createDrawerNavigator();
+export type RootStackParamList = {
+  Home: undefined;
+  'New Transaction': undefined;
+  'Transaction History': undefined;
+  Register: undefined;
+  Profile: undefined;
+  'Update Profile': undefined;
+  Update: undefined;
+  Login: undefined;
+  Logout: undefined;
+};
 
-const Stack = createStackNavigator();
+export type ScreenProps = StackNavigationProp<
+  RootStackParamList,
+  | 'New Transaction'
+  | 'Home'
+  | 'Register'
+  | 'Transaction History'
+  | 'Update Profile'
+  | 'Update'
+  | 'Login'
+  | 'Logout'
+>;
+
+const Drawer = createDrawerNavigator<RootStackParamList>();
+
+// const Stack = createStackNavigator();
 
 const AppNavigator: React.FC = () => {
   let isTest = false;
@@ -38,17 +65,30 @@ const AppNavigator: React.FC = () => {
       <Drawer.Navigator
         defaultStatus={isTest ? 'open' : 'closed'}
         initialRouteName="Home">
-        <Drawer.Screen name="Home" component={HomeScreen} />
-        <Drawer.Screen name="New Transaction" component={NewTransferScreen} />
-        <Drawer.Screen
-          name="Transaction History"
-          component={TransactionHistoryScreen}
-        />
-        <Drawer.Screen name="Register" component={RegistrationScreen} />
-        <Drawer.Screen name="Profile" component={ProfileScreen} />
-        <Drawer.Screen name="Update Profile" component={UpdateProfileScreen} />
-        <Drawer.Screen name="Login" component={LoginScreen} />
-        <Drawer.Screen name="Logout" component={LogoutScreen} />
+        {token !== null ? (
+          <>
+            <Drawer.Screen name="Home" component={HomeScreen} />
+            <Drawer.Screen
+              name="New Transaction"
+              component={NewTransferScreen}
+            />
+            <Drawer.Screen
+              name="Transaction History"
+              component={TransactionHistoryScreen}
+            />
+            <Drawer.Screen
+              name="Update Profile"
+              component={UpdateProfileScreen}
+            />
+            <Drawer.Screen name="Logout" component={LogoutScreen} />
+          </>
+        ) : (
+          <>
+            <Drawer.Screen name="Home" component={HomeScreen} />
+            <Drawer.Screen name="Login" component={LoginScreen} />
+            <Drawer.Screen name="Register" component={RegistrationScreen} />
+          </>
+        )}
       </Drawer.Navigator>
     </NavigationContainer>
   );

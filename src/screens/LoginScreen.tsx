@@ -1,15 +1,21 @@
 import React, {useState} from 'react';
-import {View, TextInput, Button} from 'react-native';
+import {View, TextInput} from 'react-native';
 import {loginUser} from '../store/slices/authSlice';
 import {useAppDispatch} from '../store/hooks';
+import {ScreenProps} from '../navigation/AppNavigator';
+import {useNavigation} from '@react-navigation/native';
+import {Button} from 'react-native-paper';
 
 const LoginScreen: React.FC = () => {
   const dispatch = useAppDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigation = useNavigation<ScreenProps>();
 
   const handleLogin = () => {
-    dispatch(loginUser({username: email, password}));
+    dispatch(loginUser({username: email, password})).then(() => {
+      navigation.navigate('Home');
+    });
   };
 
   return (
@@ -25,7 +31,9 @@ const LoginScreen: React.FC = () => {
         value={password}
         onChangeText={text => setPassword(text)}
       />
-      <Button title="Login" onPress={handleLogin} />
+      <Button mode="contained" onPress={handleLogin}>
+        Login
+      </Button>
     </View>
   );
 };

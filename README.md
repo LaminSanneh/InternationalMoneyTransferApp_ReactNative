@@ -1,3 +1,45 @@
+# Project Name: Springboot and ReactNative Money Transfer Android Mobile and Web Application
+
+# This repo is the React Native Fromtend android app
+## Other Component Repos can be found below
+
+## Important Links
+Java Springboot Backend Repository is here: [here](https://github.com/LaminSanneh/international-money-transfer-app-springboot-backend.git)
+
+React Web Frontend Lives here: [here](https://github.com/LaminSanneh/international-money-transfer-app-react-frontend.git)
+
+## Project Status: Work In Progress
+
+## Functional Requirement Items (some in the workings)
+- Create new transaction
+- See Transactions list
+- On Homepage, see a limited (3) number of recent transactions which reuses the same component above
+- Update User profile
+- Login and Logout Functionality
+- Registration Functionality
+
+## Technical Requirement Items (some in the workings)
+- Setup detox library for end to end testing
+- Secure auth token storage on frontend. Currently stored as plaintext - WIP
+- Centralize and make better the error handling from bacend api calls - WIP
+- Add token refresh mechanism or detect when it is expired or invalidated - WIP
+
+## Highlighted Technical Aspects and Technologies Used
+- Used [React Redux Toolkit](https://redux-toolkit.js.org/) along with redux-persist for storing data for offline usage
+- Used [react-native-paper](https://callstack.github.io/react-native-paper) library for the ui styling
+- Used [react-navigation](https://reactnavigation.org/)
+- Used [Typescript](https://www.typescriptlang.org/)
+- Used [react-native-dotenv](https://www.npmjs.com/package/react-native-dotenv) for multi environment variable managemment
+- Used [axios](https://axios-http.com/docs/intro) for http calls
+
+# React Native Screens
+<img src="readme-images/home-screen.png" alt="home-screen.png" width="200" />
+<img src="readme-images/new-transaction.png" alt="new-transaction" width="200" />
+<img src="readme-images/new-transaction2.png" alt="new-transaction-2" width="200" />
+<img src="readme-images/transaction-history.png" alt="transaction-history" width="200" />
+<img src="readme-images/update-profile.png" alt="update-profile" width="200" />
+<img src="readme-images/logout.png" alt="logout" width="200" />
+
 This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
 # Getting Started

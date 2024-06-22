@@ -1,8 +1,15 @@
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
-import axios from 'axios';
-// import {AppThunk} from '../store';
 import API from '../../api/Api';
-import {API_URL} from '@env';
+
+interface CurrencyIconMapInterface {
+  [index: string]: string;
+}
+
+export const currencyIconsMap: CurrencyIconMapInterface = {
+  USD: '$',
+  EUR: 'Є',
+  GBP: '£',
+};
 
 interface Transaction {
   id: number;
@@ -10,6 +17,7 @@ interface Transaction {
   amount: number;
   recipient: {id: string; name: string};
   status: string;
+  currency: string;
 }
 
 interface TransactionState {
@@ -28,18 +36,6 @@ const transactionSlice = createSlice({
   name: 'transactions',
   initialState,
   reducers: {
-    transactionStart(state) {
-      state.isLoading = true;
-      state.error = null;
-    },
-    transactionSuccess(state) {
-      state.isLoading = false;
-      state.error = null;
-    },
-    transactionFailure(state, action: PayloadAction<string>) {
-      state.isLoading = false;
-      state.error = action.payload;
-    },
     fetchTransactionsStart(state) {
       state.isLoading = true;
       state.error = null;
@@ -52,57 +48,60 @@ const transactionSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     },
+    addTransactionsStart(state) {
+      state.isLoading = true;
+      state.error = null;
+    },
+    addTransactionsSuccess(state, action: PayloadAction<Transaction>) {
+      state.isLoading = false;
+      state.transactions = [...state.transactions, action.payload];
+    },
+    addTransactionsFailure(state, action: PayloadAction<string>) {
+      state.isLoading = false;
+      state.error = action.payload;
+    },
   },
 });
 
 export const {
-  transactionStart,
-  transactionSuccess,
-  transactionFailure,
   fetchTransactionsStart,
   fetchTransactionsSuccess,
   fetchTransactionsFailure,
+  addTransactionsStart,
+  addTransactionsSuccess,
+  addTransactionsFailure,
 } = transactionSlice.actions;
 
 export default transactionSlice.reducer;
-
-export const createTransaction = createAsyncThunk<void, any>(
-  'transactions/createTransaction',
-  async (transactionData, {dispatch}) => {
-    try {
-      dispatch(transactionStart());
-      const response = await axios.post('/api/transactions', transactionData);
-      dispatch(transactionSuccess());
-    } catch (error: any) {
-      dispatch(transactionFailure(error.message));
-    }
-  },
-);
 
 export const fetchTransactions = createAsyncThunk<void>(
   'transactions/fetchTransactions',
   async (_, {dispatch}) => {
     try {
       dispatch(fetchTransactionsStart());
-      // const resp = axios
-      //   .get(`${API_URL}/transactions`)
-      //   .then(res => {
-      //     console.log(res);
-      //   })
-      // .catch(err => console.log(err));
-      // console.log(`${API_URL}/transactions`);
-      // console.log(resp);
       const response = await API.transansactions.getTransactions();
-      // const response = await axios.get(`${API_URL}/transactions`);
-      // const response = await axios.get('/api/transactions');
-      // console.log('transactions response', response.data);
-      // console.log(response);
       dispatch(fetchTransactionsSuccess(response.data));
     } catch (error: any) {
       dispatch(fetchTransactionsFailure(error.message));
     }
   },
 );
+
+export const addTransaction = createAsyncThunk<void, any>(
+  'transactions/addTransaction',
+  async (transactionData, {dispatch}) => {
+    try {
+      dispatch(addTransactionsStart());
+      const response = await API.transansactions.addTransaction(
+        transactionData,
+      );
+      dispatch(addTransactionsSuccess(response.data));
+    } catch (error: any) {
+      dispatch(addTransactionsFailure(error.message));
+    }
+  },
+);
+
 // (): AppThunk => async dispatch => {
 //   try {
 //     dispatch(fetchTransactionsStart());

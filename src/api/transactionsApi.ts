@@ -7,4 +7,8 @@ export default class TransactionApi {
     const headers = {headers: authHeader.getAuthHeader()};
     return axios.get(`${API_URL}/transactions`, headers);
   }
+  async addTransaction(transactionData: any) {
+    const headers = {headers: authHeader.getAuthHeader()};
+    return axios.post(`${API_URL}/transactions`, transactionData, headers);
+  }
 }

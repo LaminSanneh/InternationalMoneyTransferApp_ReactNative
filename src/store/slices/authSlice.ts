@@ -1,10 +1,12 @@
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
 import axios from 'axios';
 import Api from '../../api/Api';
+import authHeader from '../../api/authHeader';
+import {API_URL} from '@env';
 
 interface UpdateProfileData {
   name: String;
-  email: String;
+  // username: String;
   address: String;
 }
 
@@ -18,13 +20,19 @@ interface LoginUserData {
   password: String;
 }
 
+interface User {
+  name: string;
+  username: string;
+  address: string;
+}
+
 interface Token {
   accessToken: string;
   tokenType: string;
 }
 
 interface AuthState {
-  user: any;
+  user: User | null;
   token: Token | null;
   isLoading: boolean;
   error: string | null;
@@ -41,6 +49,18 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
+    fetchProfileStart(state) {
+      state.isLoading = true;
+      state.error = null;
+    },
+    fetchProfileSuccess(state, action: PayloadAction<any>) {
+      state.isLoading = false;
+      state.user = action.payload;
+    },
+    fetchProfileFailure(state, action: PayloadAction<string>) {
+      state.isLoading = false;
+      state.error = action.payload;
+    },
     updateProfileStart(state) {
       state.isLoading = true;
       state.error = null;
@@ -111,7 +131,30 @@ export const updateProfile = createAsyncThunk<void, UpdateProfileData>(
   async (userData, {dispatch}) => {
     try {
       dispatch(updateProfileStart());
-      const response = await axios.put('/api/profile', userData);
+      const headers = {headers: authHeader.getAuthHeader()};
+      const response = await axios.put(`${API_URL}/profile`, userData, headers);
+      console.log('Updated profile data');
+      console.log(response.data);
+      console.log('Updated profile response');
+      console.log(response);
+      dispatch(updateProfileSuccess(response.data));
+    } catch (error: any) {
+      dispatch(updateProfileFailure(error.message));
+    }
+  },
+);
+
+export const fetchProfile = createAsyncThunk<void>(
+  'auth/fetchProfile',
+  async (userData, {dispatch}) => {
+    try {
+      dispatch(updateProfileStart());
+      const headers = {headers: authHeader.getAuthHeader()};
+      const response = await axios.get(`${API_URL}/profile`, headers);
+      // console.log('Fetched profile data');
+      // console.log(response.data);
+      // console.log('Fetched profile response');
+      // console.log(response);
       dispatch(updateProfileSuccess(response.data));
     } catch (error: any) {
       dispatch(updateProfileFailure(error.message));
@@ -193,7 +236,7 @@ export const loginUser = createAsyncThunk<void, LoginUserData>(
 
 export const logoutUser = createAsyncThunk<void>(
   'auth/logoutUser',
-  async (userData, {dispatch}) => {
+  async (_, {dispatch}) => {
     try {
       dispatch(loginStart());
       const response = await Api.auth.logout();
@@ -215,6 +258,9 @@ export const logoutUser = createAsyncThunk<void>(
 //   };
 
 export const {
+  fetchProfileStart,
+  fetchProfileSuccess,
+  fetchProfileFailure,
   updateProfileStart,
   updateProfileSuccess,
   updateProfileFailure,
