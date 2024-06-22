@@ -1,6 +1,6 @@
 # Project Name: Springboot and ReactNative Money Transfer Android Mobile and Web Application
 
-# This repo is the React Native Fromtend android app
+# This repo is the React Native android app
 ## Other Component Repos can be found below
 
 ## Important Links
